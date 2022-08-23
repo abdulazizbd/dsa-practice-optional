@@ -27,13 +27,14 @@ int main()
     createSLL(5);
     nodes = lengthSLL();
     printf("\nNo. of nodes in your linked list is: %d", nodes);
-    display();
 
     result = searchInSLL(20);
-    if(result != -1)
+    if (result != -1)
         printf("\nElement is found at node: %d", result);
-    else 
+    else
         printf("\nElement is not present!");
+
+    display();
 
     insertAtBeginning(5);
     display();
@@ -125,7 +126,7 @@ int lengthSLL()
 int searchInSLL(int data)
 {
     int i;
-    struct Node * temp;
+    struct Node *temp;
     temp = head;
 
     i = 1;
@@ -145,9 +146,16 @@ void insertAtBeginning(int data)
     struct Node *newNode, *temp;
     newNode = (struct Node *)malloc(sizeof(struct Node));
     newNode->data = data;
-    temp = head;
-    head = newNode;
-    newNode->next = temp;
+    newNode->next = NULL;
+
+    if (head == 0)
+        head = newNode;
+    else
+    {
+        temp = head;
+        head = newNode;
+        newNode->next = temp;
+    }
 }
 
 void insertAtEnd(int data)
@@ -158,9 +166,15 @@ void insertAtEnd(int data)
     newNode->data = data;
     newNode->next = NULL;
 
-    while (temp->next != NULL)
-        temp = temp->next;
-    temp->next = newNode;
+    if (head == 0)
+        head = newNode;
+
+    else
+    {
+        while (temp->next != NULL)
+            temp = temp->next;
+        temp->next = newNode;
+    }
 }
 
 void insertAtPosition(int position, int data)
@@ -168,39 +182,32 @@ void insertAtPosition(int position, int data)
     int length;
     length = lengthSLL();
 
-    if (position < 1 && position > length)
+    if (position < 0 && position > length + 1)
         printf("Warning: invalid position to enter!");
 
     else
     {
-        struct Node *newNode, *temp;
-        temp = head;
-        newNode = (struct Node *)malloc(sizeof(struct Node));
-        newNode->data = data;
-        newNode->next = NULL;
+        if (position == 0 || position == 1)
+            insertAtBeginning(data);
 
-        if (head == 0)
-            head = newNode;
+        else if (position == length + 1)
+            insertAtEnd(data);
 
         else
         {
-            if (position == 1)
-                insertAtBeginning(data);
-
-            else if (position == length + 1)
-                insertAtEnd(data);
-
-            else
+            struct Node *newNode, *temp;
+            temp = head;
+            newNode = (struct Node *)malloc(sizeof(struct Node));
+            newNode->data = data;
+            newNode->next = NULL;
+            int i = 1;
+            while (i < position - 1)
             {
-                int i = 1;
-                while (i < position - 1)
-                {
-                    temp = temp->next;
-                    i++;
-                }
-                newNode->next = temp->next;
-                temp->next = newNode;
+                temp = temp->next;
+                i++;
             }
+            newNode->next = temp->next;
+            temp->next = newNode;
         }
     }
 }
@@ -247,8 +254,8 @@ void dltFromPos(int position)
 
             else if (position == length)
                 dltFromEnd();
-            
-            else 
+
+            else
             {
                 int i;
                 struct Node *temp, *nextNode;
