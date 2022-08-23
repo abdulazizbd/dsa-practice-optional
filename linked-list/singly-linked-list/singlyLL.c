@@ -182,12 +182,12 @@ void insertAtPosition(int position, int data)
     int length;
     length = lengthSLL();
 
-    if (position < 0 && position > length + 1)
+    if (position < 1 && position > length + 1)
         printf("Warning: invalid position to enter!");
 
     else
     {
-        if (position == 0 || position == 1)
+        if (position == 1)
             insertAtBeginning(data);
 
         else if (position == length + 1)
@@ -214,25 +214,35 @@ void insertAtPosition(int position, int data)
 
 void dltFromBeginning()
 {
-    struct Node *temp;
-    temp = head;
-    head = temp->next;
-    free(temp);
+    if (head == 0)
+        printf("Warning: No node to delete!");
+    else
+    {
+        struct Node *temp;
+        temp = head;
+        head = temp->next;
+        free(temp);
+    }
 }
 
 void dltFromEnd()
 {
-    struct Node *temp, *prevNode;
-    temp = head;
-    prevNode = NULL;
-
-    while (temp->next != NULL)
+    if (head == 0)
+        printf("Warning: No node to delete!");
+    else
     {
-        prevNode = temp;
-        temp = temp->next;
+        struct Node *temp, *prevNode;
+        temp = head;
+        prevNode = NULL;
+
+        while (temp->next != NULL)
+        {
+            prevNode = temp;
+            temp = temp->next;
+        }
+        prevNode->next = NULL;
+        free(temp);
     }
-    prevNode->next = NULL;
-    free(temp);
 }
 
 void dltFromPos(int position)
@@ -245,34 +255,29 @@ void dltFromPos(int position)
 
     else
     {
-        if (head == 0)
-            printf("There is no node to delete");
+        if (position == 1)
+            dltFromBeginning();
+
+        else if (position == length)
+            dltFromEnd();
+
         else
         {
-            if (position == 1)
-                dltFromBeginning();
+            int i;
+            struct Node *temp, *nextNode;
+            temp = head;
+            nextNode = temp->next;
 
-            else if (position == length)
-                dltFromEnd();
-
-            else
+            i = 1;
+            while (i < position - 1)
             {
-                int i;
-                struct Node *temp, *nextNode;
-                temp = head;
-                nextNode = temp->next;
-
-                i = 1;
-                while (i < position - 1)
-                {
-                    temp = nextNode;
-                    nextNode = nextNode->next;
-                    i++;
-                }
-                temp->next = nextNode->next;
-
-                free(nextNode);
+                temp = nextNode;
+                nextNode = nextNode->next;
+                i++;
             }
+            temp->next = nextNode->next;
+
+            free(nextNode);
         }
     }
 }
